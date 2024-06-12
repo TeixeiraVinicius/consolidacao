@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id  String @id @default(uuid())
+  name String
+  login String
+  password String
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id])
+  consolidators Consolidador[]
+  persons Person[]
+}
+
+model Profile {
+  id String @id @default(uuid())
+  name String
+  users User[]
+}
+
+model Consolidador {
+  id String @id @default(uuid())
+  imageUrl String
+  name String
+  address String
+  number Int
+  complement String
+  district String
+  city String
+  tel String
+  phone String
+  email String
+  redeId String
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  rede Rede @relation(fields: [redeId], references: [id])
+  consolidations Consolidation[]
+}
+
+model Rede {
+  id String @id @default(uuid())
+  name String
+  leader String
+  consolidators Consolidador[]
+  persons Person[]
+}
+
+model Person {
+  id String @id @default(uuid())
+  imageUrl String
+  name String
+  gender String
+  birth DateTime
+  maritStatus String
+  address String 
+  number Int
+  complment String
+  district String
+  city String
+  reference String
+  tel String
+  phone String
+  tpDecision String
+  visitDay String
+  dayPeriod String
+  religion String
+  redeId String
+  userId String
+  rede Rede @relation(fields: [redeId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+  consolidations Consolidation[]
+}
+
+model Consolidation {
+  id String @id @default(uuid())
+  consolidadorId String
+  personId  String
+  date DateTime
+  consolidador Consolidador @relation(fields: [consolidadorId], references: [id])
+  person Person @relation(fields: [personId], references: [id])
+}
